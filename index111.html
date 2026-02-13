@@ -1,0 +1,2380 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Ishaq ❤️ Sadharah | Valentine's Eternal</title>
+    
+    <!-- ========== PREMIUM FONTS ========== -->
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700;800;900&family=Poppins:wght@100;200;300;400;500;600;700;800;900&family=Dancing+Script:wght@400;500;600;700&family=Montserrat:wght@100;200;300;400;500;600;700;800;900&family=Cormorant+Garamond:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- ========== FONT AWESOME 6 ========== -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- ========== AOS ========== -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    
+    <!-- ========== SWIPER ========== -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+    
+    <!-- ========== GSAP ========== -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/MotionPathPlugin.min.js"></script>
+    
+    <!-- ========== THREE.JS ========== -->
+    <script type="importmap">
+        {
+            "imports": {
+                "three": "https://unpkg.com/three@0.128.0/build/three.module.js",
+                "three/addons/": "https://unpkg.com/three@0.128.0/examples/jsm/"
+            }
+        }
+    </script>
+    
+    <style>
+        /* ========== CINEMATIC STORY LOADER ========== */
+        .cinematic-loader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            background: radial-gradient(circle at 30% 50%, #0a0a1a 0%, #020202 100%);
+            z-index: 10000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: opacity 2.2s cubic-bezier(0.87, 0, 0.13, 1), visibility 2.2s ease;
+            perspective: 1200px;
+        }
+        
+        .cinematic-loader.fade-out {
+            opacity: 0;
+            visibility: hidden;
+        }
+        
+        .story-stage {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transform-style: preserve-3d;
+        }
+        
+        /* ===== ATMOSPHERE ===== */
+        .atmosphere {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+        
+        .fog-layer {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at 50% 50%, rgba(255,51,102,0.03) 0%, transparent 70%);
+            animation: fogPulse 8s ease infinite alternate;
+        }
+        
+        @keyframes fogPulse {
+            0% { opacity: 0.3; transform: scale(1); }
+            100% { opacity: 0.6; transform: scale(1.2); }
+        }
+        
+        .vignette {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            box-shadow: inset 0 0 150px rgba(0,0,0,0.7);
+            pointer-events: none;
+            z-index: 1000;
+        }
+        
+        /* ===== FLOOR ===== */
+        .cinematic-floor {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 35%;
+            background: linear-gradient(180deg, rgba(30,12,18,0.2) 0%, rgba(10,5,8,0.95) 100%);
+            transform-origin: bottom;
+            transform: perspective(800px) rotateX(2deg);
+            border-top: 1px solid rgba(255,107,107,0.2);
+            box-shadow: 0 -20px 80px rgba(255,51,102,0.1);
+            z-index: 10;
+        }
+        
+        .floor-texture {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                repeating-linear-gradient(90deg, rgba(255,255,255,0.01) 0px, rgba(255,255,255,0.01) 2px, transparent 2px, transparent 20px),
+                repeating-linear-gradient(0deg, rgba(255,107,107,0.02) 0px, rgba(255,107,107,0.02) 1px, transparent 1px, transparent 30px);
+            opacity: 0.5;
+        }
+        
+        /* ===== STAIRS ===== */
+        .cinematic-stairs {
+            position: absolute;
+            bottom: 35%;
+            left: 8%;
+            display: flex;
+            flex-direction: column-reverse;
+            gap: 8px;
+            transform: perspective(600px) rotateY(5deg) rotateX(1deg);
+            transform-origin: left center;
+            filter: drop-shadow(0 10px 20px rgba(0,0,0,0.5));
+            z-index: 30;
+        }
+        
+        .cinematic-step {
+            width: 200px;
+            height: 14px;
+            background: linear-gradient(90deg, rgba(50,30,40,0.9) 0%, rgba(80,50,60,0.8) 50%, rgba(110,70,80,0.7) 100%);
+            border-radius: 20px;
+            position: relative;
+            box-shadow: 0 -2px 5px rgba(0,0,0,0.3), 0 5px 15px rgba(255,51,102,0.2);
+            border-bottom: 1px solid rgba(255,107,107,0.3);
+        }
+        
+        .cinematic-step:nth-child(1) { width: 280px; }
+        .cinematic-step:nth-child(2) { width: 260px; }
+        .cinematic-step:nth-child(3) { width: 240px; }
+        .cinematic-step:nth-child(4) { width: 220px; }
+        .cinematic-step:nth-child(5) { width: 200px; }
+        .cinematic-step:nth-child(6) { width: 180px; }
+        .cinematic-step:nth-child(7) { width: 160px; }
+        
+        /* ===== FEMALE GROUP ===== */
+        .female-group {
+            position: absolute;
+            bottom: 35%;
+            right: 12%;
+            display: flex;
+            gap: 45px;
+            transform: perspective(800px) rotateY(-3deg) rotateX(0.5deg);
+            z-index: 100;
+        }
+        
+        .female-character {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            filter: drop-shadow(0 15px 20px rgba(0,0,0,0.3));
+        }
+        
+        .female-head {
+            width: 52px;
+            height: 52px;
+            background: radial-gradient(circle at 60% 30%, #ffdbbe 0%, #f5c9aa 70%, #e6b896 100%);
+            border-radius: 50%;
+            position: relative;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2), inset 0 -5px 10px rgba(0,0,0,0.1);
+        }
+        
+        .female-hair {
+            position: absolute;
+            top: -12px;
+            left: 5px;
+            width: 44px;
+            height: 30px;
+            background: radial-gradient(circle at 30% 30%, #4a2c2c 0%, #3a1e1e 80%);
+            border-radius: 60% 60% 0 0;
+            box-shadow: inset 0 -5px 10px rgba(0,0,0,0.3);
+        }
+        
+        .female-body {
+            width: 38px;
+            height: 70px;
+            background: linear-gradient(145deg, #ff85a2 0%, #ff6b8b 70%, #ff4f6d 100%);
+            border-radius: 20px 20px 10px 10px;
+            margin-top: 2px;
+            position: relative;
+            box-shadow: 0 10px 20px rgba(255,75,100,0.2), inset 0 -5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .female-dress {
+            position: absolute;
+            bottom: -8px;
+            left: -6px;
+            width: 50px;
+            height: 25px;
+            background: linear-gradient(145deg, #ff5e7c 0%, #ff3b5c 100%);
+            border-radius: 30px 30px 15px 15px;
+        }
+        
+        /* ===== MALE CHARACTER ===== */
+        .male-character {
+            position: absolute;
+            bottom: 35%;
+            left: 18%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            transform: perspective(800px) rotateY(5deg) rotateX(1deg);
+            filter: drop-shadow(0 25px 30px rgba(0,0,0,0.5));
+            z-index: 90;
+        }
+        
+        .male-head {
+            width: 58px;
+            height: 58px;
+            background: radial-gradient(circle at 55% 30%, #f5dbb1 0%, #e6c99c 70%, #d4b088 100%);
+            border-radius: 50%;
+            position: relative;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.25), inset 0 -5px 15px rgba(0,0,0,0.15);
+        }
+        
+        .male-hair {
+            position: absolute;
+            top: -15px;
+            left: 6px;
+            width: 48px;
+            height: 32px;
+            background: radial-gradient(circle at 40% 30%, #2c1e1e 0%, #1a1212 90%);
+            border-radius: 50% 50% 0 0;
+            box-shadow: inset 0 -5px 10px rgba(0,0,0,0.4);
+        }
+        
+        .male-body {
+            width: 46px;
+            height: 82px;
+            background: linear-gradient(145deg, #4a4a5a 0%, #3a3a48 70%, #2a2a35 100%);
+            border-radius: 15px 15px 8px 8px;
+            margin-top: 2px;
+            position: relative;
+            box-shadow: 0 15px 25px rgba(0,0,0,0.3), inset 0 -5px 15px rgba(0,0,0,0.2);
+        }
+        
+        .male-jacket {
+            position: absolute;
+            bottom: -10px;
+            left: -8px;
+            width: 62px;
+            height: 32px;
+            background: linear-gradient(145deg, #5a5a6a 0%, #454553 100%);
+            border-radius: 30px 30px 15px 15px;
+        }
+        
+        /* ===== HEART EYES ===== */
+        .heart-eyes-cinematic {
+            position: absolute;
+            top: -35px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 10px;
+            opacity: 0;
+            filter: drop-shadow(0 0 40px #ff3366);
+        }
+        
+        .heart-eye {
+            font-size: 40px;
+            animation: heartBeatCinematic 1.2s cubic-bezier(0.45, 0.05, 0.2, 1.2) infinite;
+        }
+        
+        @keyframes heartBeatCinematic {
+            0% { transform: scale(0.8); opacity: 0.8; }
+            50% { transform: scale(1.3); opacity: 1; }
+            100% { transform: scale(0.9); opacity: 0.9; }
+        }
+        
+        /* ===== BOW & ARROW ===== */
+        .bow-container {
+            position: absolute;
+            bottom: 40%;
+            right: 25%;
+            transform-origin: center;
+            z-index: 200;
+            opacity: 0;
+            filter: drop-shadow(0 15px 30px rgba(212,175,55,0.4));
+        }
+        
+        .realistic-bow {
+            position: relative;
+            width: 120px;
+            height: 120px;
+        }
+        
+        .bow-wood {
+            position: absolute;
+            width: 120px;
+            height: 120px;
+            border: 8px solid #8b5a2b;
+            border-radius: 50%;
+            border-right-color: transparent;
+            border-top-color: transparent;
+            transform: rotate(-45deg);
+            box-shadow: 0 0 40px rgba(212,175,55,0.4), inset 0 0 30px rgba(139,69,19,0.5);
+            background: radial-gradient(circle at 30% 30%, #c19a6b, #8b4513);
+        }
+        
+        .bow-grip {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 30px;
+            height: 40px;
+            background: linear-gradient(145deg, #6b4226, #3e2720);
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+            z-index: 10;
+        }
+        
+        .bow-string-real {
+            position: absolute;
+            top: 50%;
+            left: 10px;
+            width: 70px;
+            height: 3px;
+            background: linear-gradient(90deg, #d4af37 0%, #fff4c4 50%, #d4af37 100%);
+            transform: rotate(-45deg);
+            transform-origin: left;
+            border-radius: 3px;
+            box-shadow: 0 0 25px rgba(212,175,55,0.8);
+        }
+        
+        .arrow-real {
+            position: absolute;
+            top: 50%;
+            left: 30px;
+            width: 180px;
+            height: 6px;
+            background: linear-gradient(90deg, #d4af37 0%, #b8860b 30%, #8b4513 70%, #a0522d 100%);
+            transform: rotate(-45deg);
+            transform-origin: left;
+            border-radius: 6px;
+            box-shadow: 0 0 30px rgba(255,51,102,0.7);
+            opacity: 0;
+        }
+        
+        .arrow-flying-real {
+            position: absolute;
+            top: 50%;
+            left: 30px;
+            width: 220px;
+            height: 6px;
+            background: linear-gradient(90deg, #ff3366 0%, #ff6b6b 50%, #ff3366 100%);
+            transform-origin: left;
+            border-radius: 6px;
+            box-shadow: 0 0 50px #ff3366, 0 0 100px #ff6b6b;
+            opacity: 0;
+            z-index: 300;
+        }
+        
+        /* ===== HEART FORMATION ===== */
+        .heart-formation-cinematic {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            display: flex;
+            gap: 15px;
+            opacity: 0;
+            z-index: 400;
+        }
+        
+        .floating-heart-cinematic {
+            font-size: 80px;
+            filter: drop-shadow(0 0 60px #ff3366);
+            animation: floatHeartCinematic 3s ease-in-out infinite;
+        }
+        
+        @keyframes floatHeartCinematic {
+            0%, 100% { transform: translateY(0) scale(1); }
+            50% { transform: translateY(-30px) scale(1.1); }
+        }
+        
+        /* ===== HEART ZOOM ===== */
+        .heart-zoom-cinematic {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0);
+            font-size: 300px;
+            opacity: 0;
+            z-index: 500;
+            color: #ff3366;
+            text-shadow: 0 0 100px #ff3366, 0 0 200px #ff6b6b, 0 0 300px rgba(255,51,102,0.5);
+        }
+        
+        /* ===== CINEMATIC CAPTION ===== */
+        .cinematic-caption {
+            position: absolute;
+            bottom: 20%;
+            left: 50%;
+            transform: translateX(-50%) translateY(30px);
+            color: white;
+            font-size: 22px;
+            letter-spacing: 14px;
+            text-transform: uppercase;
+            font-weight: 300;
+            font-family: 'Montserrat', sans-serif;
+            opacity: 0;
+            z-index: 600;
+            background: rgba(0,0,0,0.6);
+            backdrop-filter: blur(20px);
+            padding: 18px 50px;
+            border-radius: 60px;
+            border: 1px solid rgba(255,107,107,0.3);
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+        }
+        
+        /* ===== PARTICLE SYSTEM ===== */
+        .particle-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1000;
+        }
+        
+        .particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: rgba(255,200,200,0.8);
+            border-radius: 50%;
+            box-shadow: 0 0 20px rgba(255,107,107,0.5);
+        }
+        
+        /* ========== ORIGINAL 5000 LINE WEBSITE STYLES ========== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        html {
+            scroll-behavior: smooth;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: #050505;
+            color: white;
+            overflow-x: hidden;
+        }
+        
+        ::-webkit-scrollbar {
+            width: 12px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: linear-gradient(180deg, #0a0a0a 0%, #1a0a0a 100%);
+            border-left: 1px solid rgba(255, 51, 102, 0.2);
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(45deg, #ff3366, #ff6b6b, #ffb6c1, #ff3366);
+            background-size: 300% 300%;
+            border-radius: 10px;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            animation: gradientMove 5s ease infinite;
+        }
+        
+        @keyframes gradientMove {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            padding: 20px 60px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 1000;
+            transition: 0.4s;
+            background: rgba(5, 5, 5, 0.8);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255, 51, 102, 0.2);
+        }
+        
+        .navbar.scrolled {
+            padding: 15px 60px;
+            background: rgba(5, 5, 5, 0.95);
+            box-shadow: 0 10px 40px rgba(255, 51, 102, 0.1);
+        }
+        
+        .logo {
+            font-size: 32px;
+            font-weight: 900;
+            background: linear-gradient(45deg, #ff3366, #ff6b6b, #ffb6c1, #ff3366);
+            background-size: 300% 300%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: gradientMove 5s ease infinite;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            position: relative;
+        }
+        
+        .logo::after {
+            content: '❤️';
+            position: absolute;
+            top: -10px;
+            right: -30px;
+            font-size: 24px;
+            animation: heartbeat 1.5s ease infinite;
+            -webkit-text-fill-color: initial;
+        }
+        
+        .nav-menu {
+            display: flex;
+            gap: 30px;
+            list-style: none;
+        }
+        
+        .nav-link {
+            color: white;
+            text-decoration: none;
+            font-size: 16px;
+            font-weight: 500;
+            padding: 8px 20px;
+            border-radius: 30px;
+            transition: 0.3s;
+            position: relative;
+            letter-spacing: 1px;
+        }
+        
+        .nav-link::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, #ff3366, #ff6b6b);
+            border-radius: 30px;
+            opacity: 0;
+            transition: 0.3s;
+            transform: scale(0.8);
+        }
+        
+        .nav-link:hover::before,
+        .nav-link.active::before {
+            opacity: 0.2;
+            transform: scale(1);
+        }
+        
+        .nav-toggle {
+            display: none;
+            font-size: 28px;
+            color: white;
+            cursor: pointer;
+        }
+        
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
+            background: radial-gradient(circle at center, #1a0f0f, #050505);
+        }
+        
+        #hero-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+        }
+        
+        .hero-content {
+            text-align: center;
+            z-index: 10;
+            padding: 20px;
+        }
+        
+        .hero-subtitle {
+            font-size: 20px;
+            letter-spacing: 15px;
+            text-transform: uppercase;
+            color: rgba(255, 255, 255, 0.8);
+            margin-bottom: 20px;
+            font-weight: 300;
+        }
+        
+        .hero-title {
+            font-size: 120px;
+            font-weight: 900;
+            font-family: 'Playfair Display', serif;
+            background: linear-gradient(45deg, #fff, #ffe6e6, #ffb3b3, #ff6b6b, #ff3366);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 20px;
+            text-shadow: 0 0 50px rgba(255, 51, 102, 0.3);
+            line-height: 1.1;
+        }
+        
+        .hero-divider {
+            width: 200px;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #ff3366, #ff6b6b, #ff3366, transparent);
+            margin: 30px auto;
+        }
+        
+        .hero-date {
+            font-size: 28px;
+            letter-spacing: 20px;
+            color: rgba(255, 255, 255, 0.9);
+            margin-bottom: 40px;
+            font-weight: 300;
+            text-transform: uppercase;
+        }
+        
+        .hero-buttons {
+            display: flex;
+            gap: 30px;
+            justify-content: center;
+        }
+        
+        .btn {
+            padding: 18px 50px;
+            font-size: 18px;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: 0.3s;
+            position: relative;
+            overflow: hidden;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(45deg, #ff3366, #ff6b6b);
+            color: white;
+            box-shadow: 0 10px 30px rgba(255, 51, 102, 0.4);
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(255, 51, 102, 0.6);
+        }
+        
+        .btn-outline {
+            background: transparent;
+            color: white;
+            border: 2px solid rgba(255, 51, 102, 0.5);
+            backdrop-filter: blur(10px);
+        }
+        
+        .btn-outline:hover {
+            background: rgba(255, 51, 102, 0.2);
+            border-color: #ff3366;
+            transform: translateY(-5px);
+        }
+        
+        .countdown {
+            padding: 100px 20px;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a0a0a 100%);
+            position: relative;
+        }
+        
+        .section-title {
+            font-size: 56px;
+            font-weight: 800;
+            font-family: 'Playfair Display', serif;
+            text-align: center;
+            margin-bottom: 20px;
+            background: linear-gradient(45deg, #fff, #ffb6c1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .section-subtitle {
+            text-align: center;
+            font-size: 18px;
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 60px;
+            letter-spacing: 5px;
+            text-transform: uppercase;
+        }
+        
+        .countdown-container {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            flex-wrap: wrap;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        
+        .countdown-box {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 51, 102, 0.3);
+            border-radius: 30px;
+            padding: 30px;
+            min-width: 160px;
+            text-align: center;
+        }
+        
+        .countdown-number {
+            font-size: 64px;
+            font-weight: 900;
+            color: white;
+            margin-bottom: 10px;
+            font-family: 'Montserrat', sans-serif;
+            background: linear-gradient(45deg, #fff, #ffb6c1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .countdown-label {
+            font-size: 18px;
+            color: rgba(255, 255, 255, 0.8);
+            letter-spacing: 3px;
+            text-transform: uppercase;
+        }
+        
+        /* ===== PROPOSAL SECTION - FIXED ===== */
+        .proposal {
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: radial-gradient(circle at center, #1a0f0f, #0a0a0a);
+            padding: 80px 20px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .proposal-card {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 51, 102, 0.2);
+            border-radius: 60px;
+            padding: 80px 60px;
+            max-width: 900px;
+            width: 100%;
+            text-align: center;
+            position: relative;
+            z-index: 10;
+            box-shadow: 0 30px 60px rgba(0,0,0,0.5);
+        }
+        
+        .proposal-icon {
+            font-size: 80px;
+            margin-bottom: 30px;
+            animation: heartbeat 1.5s ease infinite;
+        }
+        
+        .proposal-title {
+            font-size: 72px;
+            font-weight: 900;
+            font-family: 'Playfair Display', serif;
+            margin-bottom: 20px;
+            background: linear-gradient(45deg, #fff, #ffe6e6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .proposal-sub {
+            font-size: 32px;
+            color: #ffb6c1;
+            margin-bottom: 30px;
+            font-family: 'Dancing Script', cursive;
+        }
+        
+        .proposal-message {
+            font-size: 24px;
+            color: rgba(255, 255, 255, 0.9);
+            margin-bottom: 40px;
+            font-family: 'Dancing Script', cursive;
+            line-height: 1.6;
+        }
+        
+        .proposal-buttons {
+            display: flex;
+            gap: 30px;
+            justify-content: center;
+            margin-top: 50px;
+            position: relative;
+            z-index: 100;
+        }
+        
+        .btn-yes {
+            background: linear-gradient(45deg, #ff3366, #ff6b6b);
+            color: white;
+            padding: 20px 70px;
+            font-size: 28px;
+            border: none;
+            border-radius: 60px;
+            cursor: pointer;
+            font-weight: 700;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(255, 51, 102, 0.4);
+            z-index: 1000;
+        }
+        
+        .btn-yes:hover {
+            transform: scale(1.1);
+            box-shadow: 0 20px 50px rgba(255, 51, 102, 0.8);
+        }
+        
+        .btn-no {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            color: white;
+            padding: 20px 70px;
+            font-size: 28px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 60px;
+            cursor: pointer;
+            font-weight: 700;
+            transition: 0.3s;
+            position: relative;
+            z-index: 1000;
+        }
+        
+        .btn-no:hover {
+            background: rgba(255, 51, 102, 0.2);
+            border-color: #ff3366;
+        }
+        
+        .proposal-response {
+            margin-top: 50px;
+            font-size: 36px;
+            font-weight: 700;
+            min-height: 100px;
+            color: white;
+            font-family: 'Dancing Script', cursive;
+            text-shadow: 0 0 20px #ff3366;
+        }
+        
+        /* ===== YES BUTTON ANIMATION CONTAINER ===== */
+        .yes-animation-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 9999;
+            display: none;
+        }
+        
+        .yes-animation-container.active {
+            display: block;
+        }
+        
+        .floating-heart-yes {
+            position: absolute;
+            font-size: 50px;
+            animation: floatYes 4s ease-out forwards;
+            filter: drop-shadow(0 0 30px #ff3366);
+            z-index: 10000;
+        }
+        
+        @keyframes floatYes {
+            0% {
+                transform: translateY(0) scale(0.5);
+                opacity: 0;
+            }
+            20% {
+                opacity: 1;
+                transform: scale(1.2);
+            }
+            100% {
+                transform: translateY(-300px) scale(1);
+                opacity: 0;
+            }
+        }
+        
+        .name-glow {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0);
+            font-size: 80px;
+            font-weight: 900;
+            color: white;
+            text-shadow: 0 0 50px #ff3366, 0 0 100px #ff6b6b;
+            z-index: 10001;
+            animation: nameGlow 3s ease-out forwards;
+            white-space: nowrap;
+            pointer-events: none;
+        }
+        
+        @keyframes nameGlow {
+            0% {
+                transform: translate(-50%, -50%) scale(0);
+                opacity: 0;
+            }
+            50% {
+                transform: translate(-50%, -50%) scale(1.2);
+                opacity: 1;
+            }
+            100% {
+                transform: translate(-50%, -50%) scale(1);
+                opacity: 1;
+            }
+        }
+        
+        .timeline {
+            position: relative;
+            max-width: 1200px;
+            margin: 80px auto 0;
+            padding: 40px 0;
+        }
+        
+        .timeline::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 50%;
+            width: 2px;
+            height: 100%;
+            background: linear-gradient(180deg, transparent, #ff3366, #ff6b6b, #ff3366, transparent);
+            transform: translateX(-50%);
+        }
+        
+        .timeline-item {
+            display: flex;
+            justify-content: flex-end;
+            padding-right: 30px;
+            position: relative;
+            margin-bottom: 60px;
+            width: 50%;
+        }
+        
+        .timeline-item:nth-child(even) {
+            justify-content: flex-start;
+            padding-left: 30px;
+            margin-left: 50%;
+        }
+        
+        .timeline-dot {
+            position: absolute;
+            top: 50%;
+            right: -6px;
+            width: 14px;
+            height: 14px;
+            background: linear-gradient(45deg, #ff3366, #ff6b6b);
+            border-radius: 50%;
+            transform: translateY(-50%);
+            box-shadow: 0 0 30px rgba(255, 51, 102, 0.8);
+        }
+        
+        .timeline-item:nth-child(even) .timeline-dot {
+            left: -6px;
+            right: auto;
+        }
+        
+        .timeline-content {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 51, 102, 0.2);
+            border-radius: 30px;
+            padding: 30px;
+            width: 80%;
+        }
+
+        /* ===== MEMORY CARDS WITH IMAGE REVEAL - UPDATED FOR PORTRAIT ===== */
+        .memory-card {
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
+            min-height: 300px;
+        }
+
+        .memory-image {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            background: #0a0a0a;
+            opacity: 0;
+            transition: opacity 0.6s ease, transform 0.6s ease;
+            transform: scale(1.1);
+            border-radius: 15px;
+            padding: 10px;
+        }
+
+        .memory-card:hover .memory-image {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        .memory-overlay {
+            position: relative;
+            z-index: 2;
+            transition: opacity 0.4s ease;
+            background: rgba(0, 0, 0, 0.7);
+            border-radius: 15px;
+            padding: 20px;
+            min-height: 200px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .memory-card:hover .memory-overlay {
+            opacity: 0;
+        }
+
+        /* Mobile tap support */
+        .memory-card:active .memory-image {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        .memory-card:active .memory-overlay {
+            opacity: 0;
+        }
+        
+        /* ===== GALLERY SECTION - UPDATED WITH HER IMAGES ONLY ===== */
+        .gallery {
+            padding: 100px 20px;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a0a0a 100%);
+        }
+        
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            max-width: 1200px;
+            margin: 50px auto 0;
+            padding: 0 20px;
+        }
+        
+        .gallery-card {
+            position: relative;
+            border-radius: 15px;
+            overflow: hidden;
+            aspect-ratio: 3/4;
+            background: rgba(255, 255, 255, 0.03);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            cursor: pointer;
+        }
+        
+        .gallery-card-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.6s cubic-bezier(0.33, 1, 0.68, 1);
+            display: block;
+        }
+        
+        .gallery-card:hover .gallery-card-image {
+            transform: scale(1.05);
+        }
+        
+        .gallery-card-overlay {
+            position: absolute;
+            inset: 0;
+            background: rgba(10, 10, 10, 0.6);
+            backdrop-filter: blur(4px);
+            display: flex;
+            align-items: flex-end;
+            padding: 30px;
+            opacity: 0;
+            transition: opacity 0.4s ease;
+            border-radius: 15px;
+        }
+        
+        .gallery-card:hover .gallery-card-overlay {
+            opacity: 1;
+        }
+        
+        .gallery-card-caption {
+            color: white;
+            transform: translateY(30px);
+            transition: transform 0.5s cubic-bezier(0.33, 1, 0.68, 1);
+            text-align: left;
+        }
+        
+        .gallery-card:hover .gallery-card-caption {
+            transform: translateY(0);
+        }
+        
+        .gallery-card-caption h3 {
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 5px;
+            font-family: 'Playfair Display', serif;
+            background: linear-gradient(45deg, #fff, #ffb6c1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .gallery-card-caption p {
+            font-size: 16px;
+            color: rgba(255, 255, 255, 0.9);
+            font-family: 'Poppins', sans-serif;
+            font-weight: 300;
+            letter-spacing: 1px;
+        }
+        
+        /* Mobile touch support */
+        .gallery-card:active .gallery-card-image {
+            transform: scale(1.05);
+        }
+        
+        .gallery-card:active .gallery-card-overlay {
+            opacity: 1;
+        }
+        
+        .gallery-card:active .gallery-card-caption {
+            transform: translateY(0);
+        }
+        
+        @media (max-width: 768px) {
+            .gallery-grid {
+                grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+                gap: 20px;
+            }
+            
+            .gallery-card-caption h3 {
+                font-size: 20px;
+            }
+            
+            .gallery-card-caption p {
+                font-size: 14px;
+            }
+        }
+        
+        .swiper {
+            width: 100%;
+            max-width: 1200px;
+            margin: 60px auto;
+            padding: 40px 0;
+        }
+        
+        .swiper-slide {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 51, 102, 0.2);
+            border-radius: 30px;
+            padding: 40px;
+            text-align: center;
+        }
+        
+        .luxury {
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: radial-gradient(ellipse at center, #1a0a0a 0%, #050505 100%);
+        }
+        
+        .luxury-content {
+            text-align: center;
+            padding: 60px;
+            background: rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            border-radius: 60px;
+            margin: 40px;
+        }
+        
+        .luxury-swans {
+            font-size: 100px;
+            margin-bottom: 30px;
+            animation: swanFloat 6s ease infinite;
+            filter: drop-shadow(0 0 30px rgba(212, 175, 55, 0.5));
+        }
+        
+        @keyframes swanFloat {
+            0%, 100% { transform: translateY(0) scale(1); }
+            50% { transform: translateY(-20px) scale(1.05); }
+        }
+        
+        .luxury-title {
+            font-size: 90px;
+            font-weight: 900;
+            font-family: 'Playfair Display', serif;
+            background: linear-gradient(45deg, #d4af37, #fff4c4, #f4e4a1, #d4af37);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 20px;
+            letter-spacing: 15px;
+            text-transform: uppercase;
+        }
+        
+        .btn-gold {
+            background: transparent;
+            border: 2px solid #d4af37;
+            color: #d4af37;
+            padding: 20px 80px;
+            font-size: 20px;
+            border-radius: 60px;
+            cursor: pointer;
+            transition: 0.3s;
+            text-transform: uppercase;
+            letter-spacing: 6px;
+            font-weight: 700;
+            margin-top: 30px;
+        }
+        
+        .btn-gold:hover {
+            background: #d4af37;
+            color: #0a0a0a;
+            box-shadow: 0 0 60px #d4af37;
+            transform: scale(1.1);
+        }
+        
+        .cinematic {
+            position: relative;
+            height: 100vh;
+            overflow: hidden;
+        }
+        
+        #cinematic-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+        }
+        
+        .cinematic-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 2;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            background: rgba(0, 0, 0, 0.2);
+            pointer-events: none;
+        }
+        
+        .cinematic-title {
+            font-size: 90px;
+            font-weight: 900;
+            color: white;
+            text-shadow: 0 0 30px rgba(255, 51, 102, 0.8);
+            margin-bottom: 20px;
+            font-family: 'Playfair Display', serif;
+        }
+        
+        .footer {
+            background: #050505;
+            padding: 80px 20px 40px;
+            border-top: 1px solid rgba(255, 51, 102, 0.2);
+        }
+        
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 40px;
+        }
+        
+        .footer-bottom {
+            text-align: center;
+            margin-top: 60px;
+            padding-top: 40px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            color: rgba(255, 255, 255, 0.5);
+        }
+        
+        .footer-heart {
+            color: #ff3366;
+            animation: heartbeat 1.5s ease infinite;
+            display: inline-block;
+        }
+        
+        @keyframes heartbeat {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+        }
+        
+        /* ===== MUSIC PLAYER WITH SONG LIST ===== */
+        .music-player {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            z-index: 9999;
+        }
+        
+        .music-toggle {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(45deg, #ff3366, #ff6b6b);
+            border: none;
+            border-radius: 50%;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: 0.3s;
+            box-shadow: 0 10px 30px rgba(255, 51, 102, 0.4);
+            position: relative;
+            z-index: 10000;
+        }
+        
+        .music-toggle:hover {
+            transform: scale(1.1);
+            box-shadow: 0 15px 40px rgba(255, 51, 102, 0.6);
+        }
+        
+        .music-menu {
+            position: absolute;
+            bottom: 70px;
+            right: 0;
+            background: rgba(20, 10, 15, 0.95);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 51, 102, 0.3);
+            border-radius: 20px;
+            padding: 15px 0;
+            min-width: 200px;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(20px);
+            transition: all 0.3s ease;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+        }
+        
+        .music-menu.show {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+        
+        .music-menu-item {
+            padding: 12px 25px;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 16px;
+            border-left: 3px solid transparent;
+        }
+        
+        .music-menu-item i {
+            width: 20px;
+            color: #ff6b6b;
+            font-size: 14px;
+        }
+        
+        .music-menu-item:hover {
+            background: rgba(255, 51, 102, 0.15);
+            border-left-color: #ff3366;
+            padding-left: 30px;
+        }
+        
+        .music-menu-item.playing {
+            background: rgba(255, 51, 102, 0.2);
+            border-left-color: #ff3366;
+            font-weight: 600;
+        }
+        
+        .music-menu-item.playing i {
+            color: #ff3366;
+        }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(20px);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .modal.show {
+            display: flex;
+        }
+        
+        .modal-content {
+            background: linear-gradient(145deg, #1a0a0a, #0a0a0a);
+            border: 1px solid rgba(255, 51, 102, 0.3);
+            border-radius: 40px;
+            padding: 60px;
+            max-width: 600px;
+            width: 90%;
+            position: relative;
+            text-align: center;
+        }
+        
+        .floating-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+        
+        .floating-heart {
+            position: absolute;
+            font-size: 20px;
+            color: rgba(255, 51, 102, 0.2);
+            animation: floatVertical 20s linear infinite;
+        }
+        
+        @keyframes floatVertical {
+            0% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
+            10% { opacity: 0.5; }
+            90% { opacity: 0.5; }
+            100% { transform: translateY(-100px) rotate(360deg); opacity: 0; }
+        }
+        
+        @media (max-width: 768px) {
+            .navbar { padding: 20px; }
+            .nav-menu {
+                position: fixed;
+                top: 80px;
+                left: -100%;
+                width: 100%;
+                height: calc(100vh - 80px);
+                background: rgba(5, 5, 5, 0.95);
+                backdrop-filter: blur(20px);
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+                transition: 0.3s;
+                display: flex;
+            }
+            .nav-menu.active { left: 0; }
+            .nav-toggle { display: block; }
+            .hero-title { font-size: 60px; }
+            .proposal-title { font-size: 48px; }
+            .proposal-buttons { flex-direction: column; }
+            .btn-yes, .btn-no { padding: 15px 40px; font-size: 24px; }
+            .timeline::before { left: 30px; }
+            .timeline-item,
+            .timeline-item:nth-child(even) {
+                width: 100%;
+                padding-left: 70px;
+                padding-right: 20px;
+                margin-left: 0;
+            }
+            .timeline-dot { left: 26px; right: auto; }
+            .luxury-title { font-size: 48px; }
+            .cinematic-title { font-size: 40px; }
+            .footer-content { grid-template-columns: 1fr; }
+            .music-menu {
+                min-width: 180px;
+                right: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- ========== CINEMATIC STORY LOADER ========== -->
+    <div class="cinematic-loader" id="cinematicLoader">
+        <div class="story-stage">
+            <div class="atmosphere">
+                <div class="fog-layer"></div>
+                <div class="vignette"></div>
+            </div>
+            
+            <div class="cinematic-floor">
+                <div class="floor-texture"></div>
+            </div>
+            
+            <div class="cinematic-stairs" id="cinematicStairs">
+                <div class="cinematic-step"></div>
+                <div class="cinematic-step"></div>
+                <div class="cinematic-step"></div>
+                <div class="cinematic-step"></div>
+                <div class="cinematic-step"></div>
+                <div class="cinematic-step"></div>
+                <div class="cinematic-step"></div>
+            </div>
+            
+            <div class="female-group" id="femaleGroup">
+                <div class="female-character female-1">
+                    <div class="female-head"><div class="female-hair"></div></div>
+                    <div class="female-body"><div class="female-dress"></div></div>
+                </div>
+                <div class="female-character female-2">
+                    <div class="female-head"><div class="female-hair"></div></div>
+                    <div class="female-body"><div class="female-dress"></div></div>
+                </div>
+                <div class="female-character female-3">
+                    <div class="female-head"><div class="female-hair"></div></div>
+                    <div class="female-body"><div class="female-dress"></div></div>
+                </div>
+            </div>
+            
+            <div class="male-character" id="maleCharacter">
+                <div class="male-head">
+                    <div class="male-hair"></div>
+                    <div class="heart-eyes-cinematic" id="heartEyes">
+                        <div class="heart-eye">❤️</div>
+                        <div class="heart-eye">❤️</div>
+                    </div>
+                </div>
+                <div class="male-body">
+                    <div class="male-jacket"></div>
+                </div>
+            </div>
+            
+            <div class="bow-container" id="bowContainer">
+                <div class="realistic-bow">
+                    <div class="bow-wood"></div>
+                    <div class="bow-grip"></div>
+                    <div class="bow-string-real" id="bowString"></div>
+                    <div class="arrow-real" id="arrowNocked"></div>
+                    <div class="arrow-flying-real" id="arrowFlying"></div>
+                </div>
+            </div>
+            
+            <div class="heart-formation-cinematic" id="heartFormation">
+                <div class="floating-heart-cinematic">❤️</div>
+                <div class="floating-heart-cinematic">❤️</div>
+                <div class="floating-heart-cinematic">❤️</div>
+            </div>
+            
+            <div class="heart-zoom-cinematic" id="heartZoom">❤️</div>
+            
+            <div class="cinematic-caption" id="cinematicCaption">
+                ISHAQ ❤️ SADHARAH
+            </div>
+            
+            <div class="particle-container" id="particleContainer"></div>
+        </div>
+    </div>
+
+    <!-- ========== YES BUTTON ANIMATION CONTAINER ========== -->
+    <div class="yes-animation-container" id="yesAnimationContainer"></div>
+
+    <!-- ========== MAIN WEBSITE ========== -->
+    <div class="main-website" id="mainWebsite" style="opacity: 0; transition: opacity 2.2s cubic-bezier(0.87, 0, 0.13, 1);">
+        <!-- Navigation -->
+        <nav class="navbar" id="navbar">
+            <div class="logo">ISHAQ ❤️ SADHARAH</div>
+            <div class="nav-toggle" id="navToggle">
+                <i class="fas fa-bars"></i>
+            </div>
+            <ul class="nav-menu" id="navMenu">
+                <li><a href="#home" class="nav-link active"><span>Home</span></a></li>
+                <li><a href="#countdown" class="nav-link"><span>Countdown</span></a></li>
+                <li><a href="#proposal" class="nav-link"><span>Proposal</span></a></li>
+                <li><a href="#memories" class="nav-link"><span>Memories</span></a></li>
+                <li><a href="#gallery" class="nav-link"><span>Gallery</span></a></li>
+                <li><a href="#luxury" class="nav-link"><span>Luxury</span></a></li>
+                <li><a href="#cinematic" class="nav-link"><span>Cinematic</span></a></li>
+            </ul>
+        </nav>
+        
+        <!-- Hero Section -->
+        <section id="home" class="hero">
+            <canvas id="hero-canvas"></canvas>
+            <div class="hero-content">
+                <div class="hero-subtitle" data-aos="fade-up">ISHAQ & SADHARAH</div>
+                <h1 class="hero-title" data-aos="fade-up" data-aos-delay="200">VALENTINE</h1>
+                <div class="hero-divider" data-aos="fade-up" data-aos-delay="400"></div>
+                <div class="hero-date" data-aos="fade-up" data-aos-delay="600">FEBRUARY 14TH</div>
+                <div class="hero-buttons" data-aos="fade-up" data-aos-delay="800">
+                    <button class="btn btn-primary" onclick="document.getElementById('proposal').scrollIntoView({behavior: 'smooth'})">
+                        Our Love Story <i class="fas fa-heart" style="margin-left: 10px;"></i>
+                    </button>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Countdown Section -->
+        <section id="countdown" class="countdown">
+            <h2 class="section-title" data-aos="fade-up">Countdown to Us</h2>
+            <p class="section-subtitle" data-aos="fade-up" data-aos-delay="100">Days until our Valentine's Day</p>
+            
+            <div class="countdown-container">
+                <div class="countdown-box" data-aos="flip-left" data-aos-delay="200">
+                    <div class="countdown-number" id="days">00</div>
+                    <div class="countdown-label">Days</div>
+                </div>
+                <div class="countdown-box" data-aos="flip-left" data-aos-delay="300">
+                    <div class="countdown-number" id="hours">00</div>
+                    <div class="countdown-label">Hours</div>
+                </div>
+                <div class="countdown-box" data-aos="flip-left" data-aos-delay="400">
+                    <div class="countdown-number" id="minutes">00</div>
+                    <div class="countdown-label">Minutes</div>
+                </div>
+                <div class="countdown-box" data-aos="flip-left" data-aos-delay="500">
+                    <div class="countdown-number" id="seconds">00</div>
+                    <div class="countdown-label">Seconds</div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- ===== PROPOSAL SECTION - FIXED & CUSTOMIZED ===== -->
+        <section id="proposal" class="proposal">
+            <div class="proposal-card" data-aos="zoom-in">
+                <div class="proposal-icon">💝</div>
+                <h1 class="proposal-title">Will You Be Mine?</h1>
+                <div class="proposal-sub">Ishaq ❤️ Sadharah</div>
+                <p class="proposal-message">
+                    Sadharah, from the moment I saw you,<br>
+                    my heart knew it was you.<br>
+                    Will you be my Valentine forever?
+                </p>
+                <div class="proposal-buttons">
+                    <button class="btn-yes" id="yesBtn">YES! I LOVE YOU ❤️</button>
+                    <button class="btn-no" id="noBtn">No 😢</button>
+                </div>
+                <div class="proposal-response" id="proposalResponse"></div>
+            </div>
+        </section>
+        
+        <!-- Memories Section -->
+        <section id="memories" class="memories">
+            <h2 class="section-title" data-aos="fade-up">Our Beautiful Journey</h2>
+            <p class="section-subtitle" data-aos="fade-up" data-aos-delay="100">Every moment with you is a treasure</p>
+            
+            <div class="timeline">
+                <div class="timeline-item" data-aos="fade-right">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-content memory-card">
+                        <img src="images/first-meet.jpg" class="memory-image" alt="First Meet">
+                        <div class="memory-overlay">
+                            <div class="timeline-date">First Meet Up</div>
+                            <h3 class="timeline-title">The Day Everything Started</h3>
+                            <p class="timeline-desc">
+                                The first time our eyes met… little did we know,
+                                it would become our forever story.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="timeline-item" data-aos="fade-left">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-content memory-card">
+                        <img src="images/first-pic.jpg" class="memory-image" alt="First Picture">
+                        <div class="memory-overlay">
+                            <div class="timeline-date">First Pic Ever</div>
+                            <h3 class="timeline-title">Our First Picture Together</h3>
+                            <p class="timeline-desc">
+                                A moment frozen in time, but my love for you keeps growing.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="timeline-item" data-aos="fade-right">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-content memory-card">
+                        <img src="images/day-spend.jpg" class="memory-image" alt="Day Spend">
+                        <div class="memory-overlay">
+                            <div class="timeline-date">Day Spend Up</div>
+                            <h3 class="timeline-title">A Day Just For Us</h3>
+                            <p class="timeline-desc">
+                                Hours felt like seconds when I was with you.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="timeline-item" data-aos="fade-left">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-content memory-card">
+                        <img src="images/hands-hold.jpg" class="memory-image" alt="Hands Hold">
+                        <div class="memory-overlay">
+                            <div class="timeline-date">Hands Hold</div>
+                            <h3 class="timeline-title">Your Hands, My Peace</h3>
+                            <p class="timeline-desc">
+                                In your hands, I found my home.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="timeline-item" data-aos="fade-right">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-content memory-card">
+                        <img src="images/grow-together.jpg" class="memory-image" alt="Grow Together">
+                        <div class="memory-overlay">
+                            <div class="timeline-date">Grow Together</div>
+                            <h3 class="timeline-title">Growing Together, Always</h3>
+                            <p class="timeline-desc">
+                                Side by side, growing old but never apart.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Gallery Section - Updated with Her Images Only -->
+        <section id="gallery" class="gallery">
+            <h2 class="section-title" data-aos="fade-up">Her Beautiful Moments</h2>
+            <p class="section-subtitle" data-aos="fade-up" data-aos-delay="100">Through my eyes, through my heart</p>
+            
+            <div class="gallery-grid">
+                <div class="gallery-card" data-aos="zoom-in">
+                    <img src="images/gallery1.jpg" alt="Her beautiful moment" class="gallery-card-image">
+                    <div class="gallery-card-overlay">
+                        <div class="gallery-card-caption">
+                            <h3>Her Smile</h3>
+                            <p>Lights up my world</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="gallery-card" data-aos="zoom-in" data-aos-delay="100">
+                    <img src="images/gallery2.jpg" alt="Her beautiful moment" class="gallery-card-image">
+                    <div class="gallery-card-overlay">
+                        <div class="gallery-card-caption">
+                            <h3>Her Eyes</h3>
+                            <p>Where I found forever</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="gallery-card" data-aos="zoom-in" data-aos-delay="200">
+                    <img src="images/gallery3.jpg" alt="Her beautiful moment" class="gallery-card-image">
+                    <div class="gallery-card-overlay">
+                        <div class="gallery-card-caption">
+                            <h3>Her Grace</h3>
+                            <p>Elegance personified</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="gallery-card" data-aos="zoom-in" data-aos-delay="300">
+                    <img src="images/gallery4.jpg" alt="Her beautiful moment" class="gallery-card-image">
+                    <div class="gallery-card-overlay">
+                        <div class="gallery-card-caption">
+                            <h3>Her Laughter</h3>
+                            <p>Music to my soul</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="gallery-card" data-aos="zoom-in" data-aos-delay="400">
+                    <img src="images/gallery5.jpg" alt="Her beautiful moment" class="gallery-card-image">
+                    <div class="gallery-card-overlay">
+                        <div class="gallery-card-caption">
+                            <h3>Her Heart</h3>
+                            <p>The only home I need</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Luxury Section -->
+        <section id="luxury" class="luxury">
+            <div class="luxury-content" data-aos="fade-up">
+                <div class="luxury-swans">🦢❤️🦢</div>
+                <h1 class="luxury-title">ETERNAL</h1>
+                <div style="width: 300px; height: 2px; background: linear-gradient(90deg, transparent, #d4af37, transparent); margin: 30px auto;"></div>
+                <p style="font-size: 28px; color: #fff4c4; margin-bottom: 20px;">ISHAQ ❤️ SADHARAH</p>
+                <button class="btn-gold" onclick="createGoldConfetti()">FOREVER</button>
+            </div>
+        </section>
+        
+        <!-- Cinematic 3D Section -->
+        <section id="cinematic" class="cinematic">
+            <canvas id="cinematic-canvas"></canvas>
+            <div class="cinematic-overlay">
+                <h1 class="cinematic-title">I ❤️ S</h1>
+                <p class="cinematic-sub">ETERNAL LOVE</p>
+            </div>
+        </section>
+        
+        <!-- Footer -->
+        <footer class="footer">
+            <div class="footer-content">
+                <div class="footer-column">
+                    <h3>Ishaq ❤️ Sadharah</h3>
+                    <p style="color: rgba(255,255,255,0.7);">A love story written in the stars.</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>Made with <span class="footer-heart">❤️</span> by Ishaq for Sadharah</p>
+                <p style="margin-top: 20px;">February 14, 2026</p>
+            </div>
+        </footer>
+    </div>
+
+    <!-- ========== MUSIC PLAYER WITH SONG LIST ========== -->
+    <div class="music-player">
+        <div class="music-menu" id="musicMenu">
+            <div class="music-menu-item" data-song="yardaiyoo">
+                <i class="fas fa-music"></i>
+                <span>Yardaiyoo</span>
+            </div>
+            <div class="music-menu-item" data-song="munbaevaa">
+                <i class="fas fa-music"></i>
+                <span>Munbae Vaa</span>
+            </div>
+            <div class="music-menu-item" data-song="kallorum">
+                <i class="fas fa-music"></i>
+                <span>Kallorum</span>
+            </div>
+        </div>
+        <button class="music-toggle" id="musicToggle">
+            <i class="fas fa-music"></i>
+        </button>
+    </div>
+
+    <!-- Audio Elements - You need to add your song files here -->
+    <audio id="yardaiyooAudio" loop>
+        <source src="songs/yardaiyoo.mp3" type="audio/mpeg">
+        <!-- Add other formats if needed -->
+    </audio>
+    <audio id="munbaevaaAudio" loop>
+        <source src="songs/munbaevaa.mp3" type="audio/mpeg">
+    </audio>
+    <audio id="kallorumAudio" loop>
+        <source src="songs/kallorum.mp3" type="audio/mpeg">
+    </audio>
+
+    <!-- ========== SCRIPTS ========== -->
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1"></script>
+    
+    <script type="module">
+        // ========== THREE.JS HERO BACKGROUND ==========
+        import * as THREE from 'three';
+        import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+        
+        // Hero Scene
+        const heroScene = new THREE.Scene();
+        heroScene.background = new THREE.Color(0x050505);
+        
+        const heroCamera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        heroCamera.position.z = 30;
+        
+        const heroRenderer = new THREE.WebGLRenderer({
+            canvas: document.getElementById('hero-canvas'),
+            antialias: true
+        });
+        heroRenderer.setSize(window.innerWidth, window.innerHeight);
+        heroRenderer.setPixelRatio(window.devicePixelRatio);
+        
+        const heroParticlesGeometry = new THREE.BufferGeometry();
+        const heroParticlesCount = 2000;
+        const heroPositions = new Float32Array(heroParticlesCount * 3);
+        const heroColors = new Float32Array(heroParticlesCount * 3);
+        
+        for(let i = 0; i < heroParticlesCount * 3; i += 3) {
+            heroPositions[i] = (Math.random() - 0.5) * 100;
+            heroPositions[i+1] = (Math.random() - 0.5) * 100;
+            heroPositions[i+2] = (Math.random() - 0.5) * 100;
+            heroColors[i] = 1;
+            heroColors[i+1] = Math.random() * 0.5;
+            heroColors[i+2] = Math.random() * 0.5;
+        }
+        
+        heroParticlesGeometry.setAttribute('position', new THREE.BufferAttribute(heroPositions, 3));
+        heroParticlesGeometry.setAttribute('color', new THREE.BufferAttribute(heroColors, 3));
+        
+        const heroParticlesMaterial = new THREE.PointsMaterial({
+            size: 0.15,
+            vertexColors: true,
+            transparent: true,
+            blending: THREE.AdditiveBlending
+        });
+        
+        const heroParticles = new THREE.Points(heroParticlesGeometry, heroParticlesMaterial);
+        heroScene.add(heroParticles);
+        
+        function animateHero() {
+            requestAnimationFrame(animateHero);
+            heroParticles.rotation.y += 0.0002;
+            heroParticles.rotation.x += 0.0001;
+            heroRenderer.render(heroScene, heroCamera);
+        }
+        animateHero();
+        
+        // ========== CINEMATIC 3D HEART ==========
+        const cinematicScene = new THREE.Scene();
+        cinematicScene.background = new THREE.Color(0x050510);
+        
+        const cinematicCamera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
+        cinematicCamera.position.set(5, 3, 10);
+        
+        const cinematicRenderer = new THREE.WebGLRenderer({
+            canvas: document.getElementById('cinematic-canvas'),
+            antialias: true
+        });
+        cinematicRenderer.setSize(window.innerWidth, window.innerHeight);
+        cinematicRenderer.shadowMap.enabled = true;
+        cinematicRenderer.setPixelRatio(window.devicePixelRatio);
+        
+        const controls = new OrbitControls(cinematicCamera, cinematicRenderer.domElement);
+        controls.enableDamping = true;
+        controls.autoRotate = true;
+        controls.autoRotateSpeed = 2;
+        controls.enableZoom = false;
+        controls.enablePan = false;
+        
+        const ambientLight = new THREE.AmbientLight(0x404060);
+        cinematicScene.add(ambientLight);
+        
+        const mainLight = new THREE.PointLight(0xff88aa, 2, 30);
+        mainLight.position.set(2, 3, 5);
+        cinematicScene.add(mainLight);
+        
+        const heartGroup = new THREE.Group();
+        const heartMat = new THREE.MeshStandardMaterial({ color: 0xff3366, emissive: 0x550022, roughness: 0.2, metalness: 0.3 });
+        
+        const leftSphere = new THREE.Mesh(new THREE.SphereGeometry(1, 64, 64), heartMat);
+        leftSphere.position.set(-1.1, 0.6, 0);
+        heartGroup.add(leftSphere);
+        
+        const rightSphere = new THREE.Mesh(new THREE.SphereGeometry(1, 64, 64), heartMat);
+        rightSphere.position.set(1.1, 0.6, 0);
+        heartGroup.add(rightSphere);
+        
+        const bottomSphere = new THREE.Mesh(new THREE.SphereGeometry(0.9, 64, 64), heartMat);
+        bottomSphere.position.set(0, -0.5, 0);
+        heartGroup.add(bottomSphere);
+        
+        cinematicScene.add(heartGroup);
+        
+        const starsGeometry = new THREE.BufferGeometry();
+        const starsCount = 2000;
+        const starPositions = new Float32Array(starsCount * 3);
+        for(let i = 0; i < starsCount * 3; i += 3) {
+            starPositions[i] = (Math.random() - 0.5) * 200;
+            starPositions[i+1] = (Math.random() - 0.5) * 200;
+            starPositions[i+2] = (Math.random() - 0.5) * 200;
+        }
+        starsGeometry.setAttribute('position', new THREE.BufferAttribute(starPositions, 3));
+        const starsMaterial = new THREE.PointsMaterial({ color: 0xffffff, size: 0.15, transparent: true, blending: THREE.AdditiveBlending });
+        const stars = new THREE.Points(starsGeometry, starsMaterial);
+        cinematicScene.add(stars);
+        
+        function animateCinematic() {
+            requestAnimationFrame(animateCinematic);
+            controls.update();
+            heartGroup.rotation.y += 0.001;
+            heartGroup.rotation.x = Math.sin(Date.now() * 0.0005) * 0.1;
+            cinematicRenderer.render(cinematicScene, cinematicCamera);
+        }
+        animateCinematic();
+        
+        window.addEventListener('resize', () => {
+            heroCamera.aspect = window.innerWidth / window.innerHeight;
+            heroCamera.updateProjectionMatrix();
+            heroRenderer.setSize(window.innerWidth, window.innerHeight);
+            
+            cinematicCamera.aspect = window.innerWidth / window.innerHeight;
+            cinematicCamera.updateProjectionMatrix();
+            cinematicRenderer.setSize(window.innerWidth, window.innerHeight);
+        });
+    </script>
+    
+    <script>
+        // ========== GSAP CINEMATIC TIMELINE ==========
+        document.addEventListener('DOMContentLoaded', function() {
+            // Register GSAP plugins
+            gsap.registerPlugin(MotionPathPlugin);
+            
+            const tl = gsap.timeline({
+                defaults: { ease: "power3.inOut", duration: 1.2 }
+            });
+            
+            tl.from(".cinematic-floor", { y: 200, opacity: 0, duration: 1.8, ease: "elastic.out(1, 0.3)" })
+              .from(".cinematic-step", { x: -200, opacity: 0, duration: 1.4, stagger: 0.12, ease: "back.out(1.4)" }, "-=1.2")
+              .from(".female-character", { x: 200, opacity: 0, duration: 1.4, stagger: 0.15, ease: "elastic.out(1, 0.4)" }, "-=0.6")
+              .from(".male-character", { x: -200, opacity: 0, duration: 1.4, ease: "elastic.out(1, 0.4)" }, "-=1.2")
+              .to(".female-character", { y: -10, duration: 1.2, stagger: 0.1, repeat: -1, yoyo: true, ease: "sine.inOut" }, "+=0.2")
+              .to(".male-character", { y: -12, duration: 1.4, repeat: -1, yoyo: true, ease: "sine.inOut" }, "-=0.8")
+              .to(".heart-eyes-cinematic", { opacity: 1, scale: 1.2, duration: 0.8, ease: "back.out(2)" }, "+=1.2")
+              .to(".heart-eyes-cinematic", { scale: 1, duration: 0.4, ease: "power2.out" }, "-=0.2")
+              .to(".bow-container", { opacity: 1, scale: 1.2, duration: 0.8, ease: "back.out(2)" }, "+=0.6")
+              .to(".bow-container", { scale: 1, duration: 0.5, ease: "elastic.out(1, 0.3)" }, "-=0.3")
+              .to("#arrowNocked", { opacity: 1, scaleX: 1.2, duration: 0.6, ease: "power3.out" }, "+=0.4")
+              .to("#bowString", { width: 85, duration: 0.5, ease: "power2.inOut" }, "-=0.3")
+              .to("#arrowNocked", { opacity: 0, duration: 0.2 }, "+=0.3")
+              .to("#arrowFlying", { opacity: 1, duration: 0.1 }, "-=0.1")
+              .to("#arrowFlying", {
+                  motionPath: {
+                      path: [{x: 0, y: 0}, {x: 300, y: -50}, {x: 600, y: -80}],
+                      curviness: 1.8,
+                      autoRotate: true
+                  },
+                  duration: 0.9,
+                  ease: "power1.in"
+              }, "-=0.1")
+              .to("#heartFormation", { opacity: 1, scale: 1.2, duration: 0.6, ease: "back.out(2)" }, "+=0.4")
+              .to("#heartFormation", { scale: 1, duration: 0.4, ease: "elastic.out(1, 0.3)" })
+              .to("#heartZoom", { opacity: 0.8, scale: 1.5, duration: 0.4, ease: "power2.out" }, "+=0.3")
+              .to("#heartZoom", { opacity: 1, scale: 80, duration: 1.4, ease: "power4.in" })
+              .to("#cinematicCaption", { opacity: 1, y: 0, duration: 0.8, ease: "power3.out" }, "-=0.6")
+              .to(".cinematic-loader", {
+                  opacity: 0,
+                  visibility: "hidden",
+                  duration: 2.2,
+                  ease: "power4.inOut",
+                  onComplete: function() {
+                      document.querySelector('.main-website').style.opacity = '1';
+                      confetti({
+                          particleCount: 200,
+                          spread: 100,
+                          origin: { y: 0.6 },
+                          colors: ['#ff3366', '#ff6b6b', '#ffb6c1', '#d4af37']
+                      });
+                  }
+              }, "+=0.4");
+              
+            // ===== INITIALIZATION =====
+            AOS.init({ duration: 1000, once: false, mirror: true, offset: 100 });
+            
+            // Floating elements
+            createFloatingElements();
+            
+            // Countdown
+            updateCountdown();
+            setInterval(updateCountdown, 1000);
+            
+            // Navigation
+            initNavigation();
+            
+            // Proposal - FIXED VERSION
+            initProposal();
+            
+            // Navbar scroll
+            initNavbarScroll();
+            
+            // Particles
+            createParticles();
+            
+            // Music Player
+            initMusicPlayer();
+        });
+        
+        // ========== MUSIC PLAYER ==========
+        function initMusicPlayer() {
+            const musicToggle = document.getElementById('musicToggle');
+            const musicMenu = document.getElementById('musicMenu');
+            const menuItems = document.querySelectorAll('.music-menu-item');
+            
+            // Audio elements
+            const yardaiyooAudio = document.getElementById('yardaiyooAudio');
+            const munbaevaaAudio = document.getElementById('munbaevaaAudio');
+            const kallorumAudio = document.getElementById('kallorumAudio');
+            
+            let currentAudio = null;
+            let currentItem = null;
+            
+            // Toggle menu
+            musicToggle.addEventListener('click', (e) => {
+                e.stopPropagation();
+                musicMenu.classList.toggle('show');
+            });
+            
+            // Close menu when clicking outside
+            document.addEventListener('click', (e) => {
+                if (!musicMenu.contains(e.target) && !musicToggle.contains(e.target)) {
+                    musicMenu.classList.remove('show');
+                }
+            });
+            
+            // Handle song selection
+            menuItems.forEach(item => {
+                item.addEventListener('click', () => {
+                    const song = item.dataset.song;
+                    
+                    // Stop current audio if playing
+                    if (currentAudio) {
+                        currentAudio.pause();
+                        currentAudio.currentTime = 0;
+                        if (currentItem) {
+                            currentItem.classList.remove('playing');
+                            const icon = currentItem.querySelector('i');
+                            icon.className = 'fas fa-music';
+                        }
+                    }
+                    
+                    // Play new audio
+                    let audio;
+                    switch(song) {
+                        case 'yardaiyoo':
+                            audio = yardaiyooAudio;
+                            break;
+                        case 'munbaevaa':
+                            audio = munbaevaaAudio;
+                            break;
+                        case 'kallorum':
+                            audio = kallorumAudio;
+                            break;
+                    }
+                    
+                    if (audio) {
+                        audio.play();
+                        currentAudio = audio;
+                        currentItem = item;
+                        
+                        // Update UI
+                        item.classList.add('playing');
+                        const icon = item.querySelector('i');
+                        icon.className = 'fas fa-pause';
+                        
+                        // Close menu
+                        musicMenu.classList.remove('show');
+                    }
+                });
+            });
+        }
+        
+        // ========== FLOATING ELEMENTS ==========
+        function createFloatingElements() {
+            const container = document.getElementById('floatingContainer');
+            if (!container) return;
+            const elements = ['❤️', '💕', '💖', '💗', '💓', '💘', '🌹', '🌸', '✨'];
+            for (let i = 0; i < 50; i++) {
+                const element = document.createElement('div');
+                element.className = 'floating-heart';
+                element.innerHTML = elements[Math.floor(Math.random() * elements.length)];
+                element.style.left = Math.random() * 100 + '%';
+                element.style.animationDelay = Math.random() * 20 + 's';
+                element.style.animationDuration = (15 + Math.random() * 20) + 's';
+                element.style.fontSize = (15 + Math.random() * 30) + 'px';
+                container.appendChild(element);
+            }
+        }
+        
+        // ========== PARTICLES ==========
+        function createParticles() {
+            const container = document.getElementById('particleContainer');
+            if (!container) return;
+            for (let i = 0; i < 100; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.top = Math.random() * 100 + '%';
+                particle.style.animation = `floatParticle ${8 + Math.random() * 10}s linear infinite`;
+                particle.style.animationDelay = Math.random() * 5 + 's';
+                container.appendChild(particle);
+            }
+        }
+        
+        // ========== COUNTDOWN ==========
+        function updateCountdown() {
+            const valentineDay = new Date('February 14, 2026 00:00:00').getTime();
+            const now = new Date().getTime();
+            const distance = valentineDay - now;
+            
+            document.getElementById('days').innerHTML = String(Math.floor(distance / (1000 * 60 * 60 * 24))).padStart(2, '0');
+            document.getElementById('hours').innerHTML = String(Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60))).padStart(2, '0');
+            document.getElementById('minutes').innerHTML = String(Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60))).padStart(2, '0');
+            document.getElementById('seconds').innerHTML = String(Math.floor((distance % (1000 * 60)) / 1000)).padStart(2, '0');
+        }
+        
+        // ========== PROPOSAL - FIXED & ENHANCED ==========
+        function initProposal() {
+            const yesBtn = document.getElementById('yesBtn');
+            const noBtn = document.getElementById('noBtn');
+            const response = document.getElementById('proposalResponse');
+            
+            if (!yesBtn || !noBtn) return;
+            
+            let noClickCount = 0;
+            const noMessages = [
+                "Are you sure? 😢",
+                "Think again Sadharah! 💔",
+                "Please? 🥺",
+                "Last chance! 💕",
+                "Ishaq loves you! ❤️",
+                "You're my Valentine! 💘",
+                "Forever? 💝",
+                "Please say yes! 💖",
+                "I'll wait forever 💓",
+                "Okay I give up... just kidding! ❤️"
+            ];
+            
+            // FIXED: No button moving logic
+            noBtn.addEventListener('mouseover', function(e) {
+                if (noClickCount < 8) {
+                    const x = Math.random() * (window.innerWidth - 300);
+                    const y = Math.random() * (window.innerHeight - 200);
+                    this.style.position = 'fixed';
+                    this.style.left = x + 'px';
+                    this.style.top = y + 'px';
+                    this.style.zIndex = '9999';
+                }
+                
+                noClickCount++;
+                
+                if (noClickCount <= noMessages.length) {
+                    this.textContent = noMessages[noClickCount - 1];
+                }
+                
+                if (noClickCount === 9) {
+                    this.style.display = 'none';
+                }
+            });
+            
+            // ENHANCED: Yes button with multiple animations
+            yesBtn.addEventListener('click', function() {
+                // Response message with names
+                response.innerHTML = 'YES! ❤️ SADHARAH SAID YES! I LOVE YOU! 🥰💕💖';
+                
+                // 1. Confetti explosion
+                for (let i = 0; i < 15; i++) {
+                    setTimeout(() => {
+                        confetti({
+                            particleCount: 150,
+                            spread: 90,
+                            origin: { x: Math.random(), y: Math.random() * 0.5 },
+                            colors: ['#ff3366', '#ff6b6b', '#ffb6c1', '#ffffff', '#ffd700', '#d4af37']
+                        });
+                    }, i * 100);
+                }
+                
+                // 2. Floating hearts animation
+                const container = document.getElementById('yesAnimationContainer');
+                container.classList.add('active');
+                
+                for (let i = 0; i < 50; i++) {
+                    setTimeout(() => {
+                        const heart = document.createElement('div');
+                        heart.className = 'floating-heart-yes';
+                        heart.innerHTML = ['❤️', '💕', '💖', '💗', '💓', '💘'][Math.floor(Math.random() * 6)];
+                        heart.style.left = Math.random() * 100 + '%';
+                        heart.style.top = Math.random() * 100 + '%';
+                        heart.style.animationDelay = Math.random() * 0.5 + 's';
+                        heart.style.fontSize = (30 + Math.random() * 50) + 'px';
+                        container.appendChild(heart);
+                        
+                        setTimeout(() => heart.remove(), 4000);
+                    }, i * 50);
+                }
+                
+                // 3. Name glow animation
+                setTimeout(() => {
+                    const nameGlow = document.createElement('div');
+                    nameGlow.className = 'name-glow';
+                    nameGlow.innerHTML = 'ISHAQ ❤️ SADHARAH';
+                    document.body.appendChild(nameGlow);
+                    
+                    setTimeout(() => nameGlow.remove(), 3000);
+                }, 500);
+                
+                // 4. Hide no button
+                noBtn.style.display = 'none';
+                noBtn.style.position = 'relative';
+                
+                // 5. Change button text
+                yesBtn.textContent = 'SHE SAID YES! ❤️';
+                yesBtn.style.transform = 'scale(1.2)';
+                
+                // 6. Show love letter
+                setTimeout(() => {
+                    if (document.getElementById('loveLetterModal')) {
+                        document.getElementById('loveLetterModal').classList.add('show');
+                    }
+                }, 1500);
+            });
+        }
+        
+        // ========== GOLD CONFETTI ==========
+        function createGoldConfetti() {
+            for (let i = 0; i < 5; i++) {
+                setTimeout(() => {
+                    confetti({
+                        particleCount: 150,
+                        spread: 70,
+                        origin: { y: 0.6 },
+                        colors: ['#d4af37', '#fff4c4', '#f4e4a1', '#ffd700']
+                    });
+                }, i * 200);
+            }
+        }
+        
+        // ========== NAVIGATION ==========
+        function initNavigation() {
+            const navToggle = document.getElementById('navToggle');
+            const navMenu = document.getElementById('navMenu');
+            const navLinks = document.querySelectorAll('.nav-link');
+            
+            if (navToggle) {
+                navToggle.addEventListener('click', () => {
+                    navMenu.classList.toggle('active');
+                });
+            }
+            
+            navLinks.forEach(link => {
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const target = document.querySelector(link.getAttribute('href'));
+                    if (target) {
+                        target.scrollIntoView({ behavior: 'smooth' });
+                    }
+                    if (navMenu) navMenu.classList.remove('active');
+                });
+            });
+        }
+        
+        // ========== NAVBAR SCROLL ==========
+        function initNavbarScroll() {
+            const navbar = document.getElementById('navbar');
+            window.addEventListener('scroll', () => {
+                if (navbar) {
+                    if (window.scrollY > 100) navbar.classList.add('scrolled');
+                    else navbar.classList.remove('scrolled');
+                }
+            });
+        }
+        
+        // ========== SKIP STORY ==========
+        window.addEventListener('keydown', (e) => {
+            if (e.key === 's' || e.key === 'S') {
+                document.querySelector('.cinematic-loader').style.opacity = '0';
+                document.querySelector('.cinematic-loader').style.visibility = 'hidden';
+                document.querySelector('.main-website').style.opacity = '1';
+            }
+        });
+        
+        // Add animation styles
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes floatParticle {
+                0% { transform: translateY(0) translateX(0); opacity: 0; }
+                10% { opacity: 0.8; }
+                90% { opacity: 0.6; }
+                100% { transform: translateY(-100vh) translateX(${Math.random() * 200 - 100}px); opacity: 0; }
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+</body>
+</html>
